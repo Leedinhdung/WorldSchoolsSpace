@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,9 +29,21 @@ Route::prefix('admin')->as('admin.')->group(function () {
 Route::prefix('admin')->as('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    //BANNER
+    Route::prefix('banner')->as('banner.')->group(function () {
+        Route::get('/', [BannerController::class, 'index'])->name('index');
+        Route::get('creat', [BannerController::class, 'create'])->name('create');
+    });
+
     //CATEGORY
     Route::prefix('categories')->as('categories.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
         Route::get('creat', [CategoryController::class, 'create'])->name('create');
+    });
+
+    //POST
+    Route::prefix('post')->as('post.')->group(function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::get('create', [PostController::class, 'create'])->name('create');
     });
 });
