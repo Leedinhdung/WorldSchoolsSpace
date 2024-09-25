@@ -10,7 +10,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript: void(0);">Banners</a></li>
-                        <li class="breadcrumb-item active"></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div>
 
@@ -19,7 +19,7 @@
     </div>
     <!-- end page title -->
 
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.banner.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-8">
@@ -27,22 +27,22 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8 mb-3">
-                                <label for="name" class="form-label">Tiêu đề</label>
-                                <input type="text" value="{{ old('name') }}" name="name" class="form-control"
-                                    placeholder="Tiêu đề" id="name">
+                                <label for="title" class="form-label">Tiêu đề</label>
+                                <input type="text" value="{{ old('title') }}" name="title" class="form-control"
+                                    placeholder="Tiêu đề" id="title">
                                 <small class="help-block form-text text-danger">
-                                    @if ($errors->has('name'))
-                                        {{ $errors->first('name') }}
+                                    @if ($errors->has('title'))
+                                        {{ $errors->first('title') }}
                                     @endif
                                 </small>
                             </div>
                             <div class="col-4 mb-3">
-                                <label for="slug" class="form-label">Đường dẫn </label>
-                                <input type="text" name="slug" value="{{ old('slug') }}" class="form-control"
-                                    placeholder="Đường dẫn" readonly id="slug">
+                                <label for="url" class="form-label">Đường dẫn </label>
+                                <input type="text" name="url" value="{{ old('url') }}" class="form-control"
+                                    placeholder="Đường dẫn" id="url">
                                 <small class="help-block form-text text-danger">
-                                    @if ($errors->has('slug'))
-                                        {{ $errors->first('slug') }}
+                                    @if ($errors->has('url'))
+                                        {{ $errors->first('url') }}
                                     @endif
                                 </small>
                             </div>

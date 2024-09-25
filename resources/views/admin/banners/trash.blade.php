@@ -12,7 +12,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript: void(0);">Banners</a></li>
-                        <li class="breadcrumb-item active">Danh sách banner</li>
+                        <li class="breadcrumb-item active">Thùng rác</li>
                     </ol>
                 </div>
 
@@ -26,14 +26,9 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between items-content-center">
                         <div>
-                            <h5 class="card-title mb-0">Danh sách banner</h5>
-                            <div class="d-flex gap-2">
-                                <span>Tất cả ({{ $totalBanners }})</span>
-                                <div>||</div>
-                                <a href="{{ route('admin.banner.trash') }}">Thùng rác ({{ $trashedBanners }})</a>
-                            </div>
+                            <span>Tất cả ({{ $totalTrashedBanners }})</span>
                         </div>
-                        <a href="{{ route('admin.banner.create') }}" class="btn btn-primary">Thêm banner</a>
+                        <a href="{{ route('admin.banner.index') }}" class="btn btn-primary">Quay lại</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -57,7 +52,7 @@
                             @php
                                 $i = 0;
                             @endphp
-                            @foreach ($banners as $banner)
+                            @foreach ($trashedBanners as $banner)
                                 @php
                                     $i++;
                                 @endphp
@@ -78,9 +73,10 @@
 
                                     <td>
                                         <div class="">
-                                            <a href="{{ route('admin.banner.edit', $banner->id) }}"
-                                                class="btn btn-sm btn-warning">Chỉnh sửa</a>
-                                            <a href="{{ route('admin.banner.destroy', $banner->id) }}"
+                                            <a href="{{ route('admin.banner.restore', $banner->id) }}"
+                                                onclick="return confirm('Bạn có chắc chắn muốn khôi phục {{ $banner->title }} không?')"
+                                                class="btn btn-sm btn-warning">Khôi phục</a>
+                                            <a href="{{ route('admin.banner.forcedelete', $banner->id) }}"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa {{ $banner->title }} không?')"
                                                 class="btn btn-sm btn-danger">Xóa</a>
                                         </div>
