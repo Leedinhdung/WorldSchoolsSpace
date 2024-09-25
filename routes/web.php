@@ -26,13 +26,20 @@ Route::prefix('admin')->as('admin.')->group(function () {
     Route::post('login', [AdminController::class, 'login'])->name('login');
     Route::get('logout', [AdminController::class, 'logout'])->name('logout');
 });
-Route::prefix('admin')->as('admin.')->group(function () {
+Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     //BANNER
     Route::prefix('banner')->as('banner.')->group(function () {
         Route::get('/', [BannerController::class, 'index'])->name('index');
+        Route::get('/trash', [BannerController::class, 'trash'])->name('trash');
         Route::get('creat', [BannerController::class, 'create'])->name('create');
+        Route::post('store', [BannerController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [BannerController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [BannerController::class, 'update'])->name('update');
+        Route::get('destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
+        Route::get('restore/{id}', [BannerController::class, 'restore'])->name('restore');
+        Route::get('forcedelete/{id}', [BannerController::class, 'forcedelete'])->name('forcedelete');
     });
 
     //CATEGORY
