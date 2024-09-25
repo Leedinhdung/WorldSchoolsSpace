@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Banner\BannerStoreRequest;
+use App\Http\Requests\Admin\Banner\BannerUpdateRequest;
 use App\Models\Banner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -90,7 +91,7 @@ class BannerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BannerUpdateRequest $request, string $id)
     {
         $banner = Banner::findOrFail($id);
         DB::beginTransaction();
