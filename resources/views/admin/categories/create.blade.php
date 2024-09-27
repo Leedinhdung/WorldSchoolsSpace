@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Thêm danh mục</h4>
+                <h4 class="mb-sm-0">{{ $title }}</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Categories</a></li>
-                        <li class="breadcrumb-item active"></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Danh mục</a></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div>
 
@@ -19,7 +19,7 @@
     </div>
     <!-- end page title -->
 
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-8">
@@ -98,12 +98,24 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Danh mục </h5>
+                        <h5 class="card-title mb-0">Danh mục cha :</h5>
                     </div>
                     <div class="card-body">
                         <select class="form-select" name="parent_id">
 
-                            <option value="0">--Chọn danh mục--</option>
+                            <option value="">-- Không có danh mục cha --</option>
+
+                            @foreach ($categoryTree as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @if (!empty($category->children))
+                                    @foreach ($category->children as $childCategory)
+                                        <option value="{{ $childCategory->id }}">
+                                            -- {{ $childCategory->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            @endforeach
+
                         </select>
                     </div>
                     <!-- end card body -->

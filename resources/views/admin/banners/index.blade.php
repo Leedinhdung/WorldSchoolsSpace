@@ -72,9 +72,11 @@
                                     <td><img src="{{ Storage::url($banner->image) }}" width="100px" class="rounded"
                                             alt=""></td>
                                     <td>{{ $banner->title }}</td>
-                                    <td>{!! $banner->is_active
-                                        ? '<span class="badge bg-primary">Hoạt động</span>'
-                                        : '<span class="badge bg-primary">không hoạt động</span>' !!}</td>
+                                    <td>
+                                        {!! $banner->is_active
+                                            ? '<span class="badge bg-primary">Hoạt động</span>'
+                                            : '<span class="badge bg-primary">không hoạt động</span>' !!}
+                                    </td>
 
                                     <td>
                                         <div class="">

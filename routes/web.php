@@ -33,7 +33,7 @@ Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
     Route::prefix('banner')->as('banner.')->group(function () {
         Route::get('/', [BannerController::class, 'index'])->name('index');
         Route::get('/trash', [BannerController::class, 'trash'])->name('trash');
-        Route::get('creat', [BannerController::class, 'create'])->name('create');
+        Route::get('create', [BannerController::class, 'create'])->name('create');
         Route::post('store', [BannerController::class, 'store'])->name('store');
         Route::get('edit/{id}', [BannerController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [BannerController::class, 'update'])->name('update');
@@ -45,7 +45,14 @@ Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
     //CATEGORY
     Route::prefix('categories')->as('categories.')->group(function () {
         Route::get('/', [CategoryController::class, 'index'])->name('index');
-        Route::get('creat', [CategoryController::class, 'create'])->name('create');
+        Route::get('/trash', [CategoryController::class, 'trash'])->name('trash');
+        Route::get('create', [CategoryController::class, 'create'])->name('create');
+        Route::post('store', [CategoryController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [CategoryController::class, 'update'])->name('update');
+        Route::get('destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
+        Route::get('restore/{id}', [CategoryController::class, 'restore'])->name('restore');
+        Route::get('forcedelete/{id}', [CategoryController::class, 'forcedelete'])->name('forcedelete');
     });
 
     //POST
