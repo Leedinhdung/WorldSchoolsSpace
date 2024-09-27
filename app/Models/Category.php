@@ -16,6 +16,47 @@ class Category extends Model
         'description',
         'parent_id',
         'is_active'
+    ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    // Lấy danh mục con
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    // Lấy danh mục cha
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    // Hàm đệ quy để xây dựng cây danh mục
+    public static function buildCategoryTree($categories, $parentId = null)
+    {
+        $branch = [];
+        foreach ($categories as $category) {
+            if ($category->parent_id == $parentId) {
+                $children = self::buildCategoryTree($categories, $category->id);
+                if ($children) {
+                    $category->children = $children;
+                }
+                $branch[] = $category;
+            }
+        }
+        return $branch;
+    }
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 }

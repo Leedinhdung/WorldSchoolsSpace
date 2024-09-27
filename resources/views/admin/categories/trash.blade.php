@@ -11,7 +11,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript: void(0);">Danh mục</a></li>
-                        <li class="breadcrumb-item active">Danh sách danh mục</li>
+                        <li class="breadcrumb-item active">Thùng rác</li>
                     </ol>
                 </div>
 
@@ -26,14 +26,9 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between items-content-center">
                         <div>
-                            <h5 class="card-title mb-0">Danh sách danh mục</h5>
-                            <div class="d-flex gap-2">
-                                <span>Tất cả ({{ $totalCategories }})</span>
-                                <div>||</div>
-                                <a href="{{ route('admin.categories.trash') }}">Thùng rác ({{ $trashedCategories }})</a>
-                            </div>
+                            <span>Tất cả ({{ $totalTrashedCategories }})</span>
                         </div>
-                        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">Thêm danh mục</a>
+                        <a href="{{ route('admin.categories.index') }}" class="btn btn-primary">Quay lại</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -61,7 +56,7 @@
                                 $i = 0;
                             @endphp
 
-                            @foreach ($categories as $category)
+                            @foreach ($trashedCategories as $category)
                                 @php
                                     $i++;
                                 @endphp
@@ -85,9 +80,10 @@
 
                                     <td>
                                         <div class="">
-                                            <a href="{{ route('admin.categories.edit', $category->id) }}"
-                                                class="btn btn-sm btn-warning">Chỉnh sửa</a>
-                                            <a href="{{ route('admin.categories.destroy', $category->id) }}"
+                                            <a href="{{ route('admin.categories.restore', $category->id) }}"
+                                                onclick="return confirm('Bạn có chắc chắn muốn khôi phục {{ $category->title }} không?')"
+                                                class="btn btn-sm btn-warning">Khôi phục</a>
+                                            <a href="{{ route('admin.categories.forcedelete', $category->id) }}"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa {{ $category->title }} không?')"
                                                 class="btn btn-sm btn-danger">Xóa</a>
                                         </div>
