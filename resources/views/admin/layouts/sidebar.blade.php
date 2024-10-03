@@ -81,12 +81,12 @@
                     <div class="collapse menu-dropdown" id="sidebarPosts">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('admin.post.index') }}" class="nav-link" data-key="t-analytics">
+                                <a href="{{ route('admin.posts.index') }}" class="nav-link" data-key="t-analytics">
                                     Danh sách bài viết
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ route('admin.post.create') }}" class="nav-link" data-key="t-crm">
+                                <a href="{{ route('admin.posts.create') }}" class="nav-link" data-key="t-crm">
                                     Thêm mới bài viết
                                 </a>
                             </li>

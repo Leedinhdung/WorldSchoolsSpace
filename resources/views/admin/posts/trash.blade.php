@@ -26,14 +26,9 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between items-content-center">
                         <div>
-                            <h5 class="card-title mb-0">Danh sách bài viết</h5>
-                            <div class="d-flex gap-2">
-                                <span>Tất cả ({{ $totalPosts }})</span>
-                                <div>||</div>
-                                <a href="{{ route('admin.posts.trash') }}">Thùng rác ({{ $trashedPosts }})</a>
-                            </div>
+                            <span>Tất cả ({{ $totalTrashedPosts }})</span>
                         </div>
-                        <a href="{{ route('admin.posts.create') }}" class="btn btn-primary">Thêm bài viết</a>
+                        <a href="{{ route('admin.posts.index') }}" class="btn btn-primary">Quay lại</a>
                     </div>
                 </div>
                 <div class="card-body">
@@ -105,7 +100,7 @@
                             @php
                                 $i = 0;
                             @endphp
-                            @foreach ($posts as $post)
+                            @foreach ($trashedPosts as $post)
                                 @php
                                     $i++;
                                 @endphp
@@ -136,9 +131,10 @@
                                     </td>
                                     <td>
                                         <div class="">
-                                            <a href="{{ route('admin.posts.edit', $post->id) }}"
-                                                class="btn btn-sm btn-warning">Chỉnh sửa</a>
-                                            <a href="{{ route('admin.posts.destroy', $post->id) }}"
+                                            <a href="{{ route('admin.posts.restore', $post->id) }}"
+                                                onclick="return confirm('Bạn có chắc chắn muốn khôi phục {{ $post->title }} không?')"
+                                                class="btn btn-sm btn-warning">Khôi phục</a>
+                                            <a href="{{ route('admin.posts.forcedelete', $post->id) }}"
                                                 onclick="return confirm('Bạn có chắc chắn muốn xóa {{ $post->title }} không?')"
                                                 class="btn btn-sm btn-danger">Xóa</a>
                                         </div>

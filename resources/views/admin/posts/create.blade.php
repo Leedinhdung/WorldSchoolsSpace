@@ -5,12 +5,12 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Create Product</h4>
+                <h4 class="mb-sm-0">{{ $title }}</h4>
 
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
-                        <li class="breadcrumb-item active">Create Product</li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Bài viết</a></li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div>
 
@@ -19,46 +19,68 @@
     </div>
     <!-- end page title -->
 
-    <form id="createproduct-form" autocomplete="off" class="needs-validation" novalidate>
+    <form action="{{ route('admin.posts.store') }}" method="POST" id="createproduct-form" autocomplete="off"
+        class="needs-validation" novalidate enctype="multipart/form-data">
+        @csrf
         <div class="row">
             <div class="col-lg-8">
                 <div class="card">
                     <div class="card-body">
                         <div class="row mb-3">
                             <div class="col-8 ">
-                                <label class="form-label" for="product-title-input">Product Title</label>
-                                <input type="hidden" class="form-control" id="formAction" name="formAction" value="add">
-                                <input type="text" class="form-control d-none" id="product-id-input">
-                                <input type="text" class="form-control" id="product-title-input" value=""
-                                    placeholder="Enter product title" required>
-                                <div class="invalid-feedback">Please Enter a product title.</div>
+                                <label for="title" class="form-label">Tiêu đề bài viết</label>
+                                <input type="text" value="{{ old('title') }}" name="title" class="form-control"
+                                    placeholder="Nhập tiêu đề" id="title">
+                                <small class="help-block form-text text-danger">
+                                    @if ($errors->has('title'))
+                                        {{ $errors->first('title') }}
+                                    @endif
+                                </small>
                             </div>
                             <div class="col-4">
-                                <label for="">Danh mục</label>
-                                <select class="form-select" id="choices-category-input" name="choices-category-input"
-                                    data-choices data-choices-search-false>
-                                    <option value="Appliances">Appliances</option>
-                                    <option value="Automotive Accessories">Automotive Accessories</option>
-                                    <option value="Electronics">Electronics</option>
-                                    <option value="Fashion">Fashion</option>
-                                    <option value="Furniture">Furniture</option>
-                                    <option value="Grocery">Grocery</option>
-                                    <option value="Kids">Kids</option>
-                                    <option value="Watches">Watches</option>
+                                <label for="category_id">Danh mục</label>
+                                <select class="form-select" id="category_id" name="category_id" data-choices
+                                    data-choices-search-false>
+
+                                    @foreach ($categoryTree as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @if (!empty($category->children))
+                                            @include('admin.categories.option-children', [
+                                                'children' => $category->children,
+                                                'prefix' => '-',
+                                            ])
+                                            <hr>
+                                        @endif
+                                    @endforeach
+
                                 </select>
 
                                 <!-- end card body -->
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="">Tóm tắt</label>
-                            <textarea name="excerpt" class="form-control" id="" cols="30" rows="10"></textarea>
+                            <label for="slug" class="form-label">Đường dẫn</label>
+                            <input type="text" name="slug" value="{{ old('slug') }}" class="form-control"
+                                placeholder="Đường dẫn thân thiện" readonly id="slug">
+                            <small class="help-block form-text text-danger">
+                                @if ($errors->has('slug'))
+                                    {{ $errors->first('slug') }}
+                                @endif
+                            </small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="excerpt" class="form-label">Tóm tắt</label>
+                            <textarea class="form-control" name="excerpt" id="excerpt" cols="30" rows="4">{{ old('excerpt') }}</textarea>
+                            <small class="help-block form-text text-danger">
+                                @if ($errors->has('excerpt'))
+                                    {{ $errors->first('excerpt') }}
+                                @endif
+                            </small>
                         </div>
                         <div>
-                            <label>Product Description</label>
-
-                            <div id="ckeditor-classic">
-
+                            <div>
+                                <label for="content">Nội dung bài viết</label>
+                                <textarea id="editor" name="content">{{ old('content') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -70,8 +92,8 @@
 
 
                 <!-- end card -->
-                <div class="text-end mb-3">
-                    <button type="submit" class="btn btn-success w-sm">Đăng</button>
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-primary">Đăng bài</button>
                 </div>
             </div>
             <!-- end col -->
@@ -109,66 +131,33 @@
                             </div>
                         </label>
                     </div>
-
                 </div>
+
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Product Gallery</h5>
+                        <h5 class="card-title mb-0">Ảnh đại diện</h5>
                     </div>
                     <div class="card-body">
-                        <div>
-                            <p class="text-muted">Add Product Gallery Images.</p>
-                            <div class="dropzone">
-                                <div class="fallback">
-                                    <input name="file" type="file">
-                                </div>
-                                <div class="dz-message needsclick">
-                                    <div class="mb-3">
-                                        <i class="display-2 text-muted ri-upload-cloud-2-fill"></i>
-                                    </div>
-                                    <h5>Tải ảnh lên</h5>
-                                </div>
-                            </div>
-
-                            <ul class="list-unstyled mb-0" id="dropzone-preview">
-                                <li class="mt-2" id="dropzone-preview-list">
-                                    <!-- This is used as the file preview template -->
-                                    <div class="border rounded">
-                                        <div class="d-flex p-2">
-                                            <div class="flex-shrink-0 me-3">
-                                                <div class="avatar-sm bg-light rounded">
-                                                    <img data-dz-thumbnail class="img-fluid rounded d-block"
-                                                        src="#" alt="Product-Image" />
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="pt-1">
-                                                    <h5 class="fs-14 mb-1" data-dz-name>&nbsp;</h5>
-                                                    <p class="fs-13 text-muted mb-0" data-dz-size></p>
-                                                    <strong class="error text-danger" data-dz-errormessage></strong>
-                                                </div>
-                                            </div>
-                                            <div class="flex-shrink-0 ms-3">
-                                                <button data-dz-remove class="btn btn-sm btn-danger">Xóa</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <!-- end dropzon-preview -->
+                        <p class="text-muted">Thêm ảnh đại diện cho bài viết của bạn</p>
+                        <input type="file" name="image" id="uploadImage" accept="image/*"
+                            onchange="previewImage(event)" class="form-control mb-3">
+                        <div id="imagePreview" class="border rounded p-2" style="display:none;">
+                            <img id="preview" class="img-fluid rounded" alt="Preview"
+                                style="width: 100%; object-fit: cover;">
+                            <button type="button" class="btn btn-danger mt-2" onclick="removeImage()">Xóa ảnh</button>
                         </div>
-
                     </div>
                 </div>
+
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Product Tags</h5>
+                        <h5 class="card-title mb-0">Tag của bài viết</h5>
                     </div>
                     <div class="card-body">
                         <div class="hstack gap-3 align-items-start">
                             <div class="flex-grow-1">
-                                <input class="form-control" data-choices data-choices-multiple-remove="true"
-                                    placeholder="Enter tags" type="text" value="Cotton" />
+                                <input name="tags" class="form-control" placeholder="tag1, tag2, tag3" type="text"
+                                    value="{{ old('tags') }}">
                             </div>
                         </div>
                     </div>
@@ -330,8 +319,68 @@
     </style>
 @endsection
 @section('script-libs')
-    <!-- ckeditor -->
-    <script src="{{ asset('theme/admin/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js') }}"></script>
+    <script>
+        // Hàm hiển thị ảnh khi người dùng chọn file
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('preview');
+                    img.src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Hàm xóa ảnh và đặt lại input
+        function removeImage() {
+            const imgPreview = document.getElementById('imagePreview');
+            const inputFile = document.getElementById('uploadImage');
+            imgPreview.style.display = 'none';
+            inputFile.value = ''; // Đặt lại giá trị của input file
+        }
+    </script>
+
+
+    <!-- CKEditor 5 script -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'), {
+                ckfinder: {
+                    uploadUrl: "{{ route('admin.posts.ckeditor.upload') . '?_token=' . csrf_token() }}", // Laravel xử lý upload
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
+
+    {{-- Tự tạo slug --}}
+    <script>
+        document.getElementById('title').addEventListener('input', function() {
+            let nameValue = this.value;
+
+            function removeAccents(str) {
+                return str
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '')
+                    .replace(/đ/g, 'd')
+                    .replace(/Đ/g, 'D');
+            }
+
+            let slug = removeAccents(nameValue)
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w-]+/g, '');
+
+            document.getElementById('slug').value = slug;
+        });
+    </script>
 
     <!-- dropzone js -->
     <script src="{{ asset('theme/admin/assets/libs/dropzone/dropzone-min.js') }}"></script>

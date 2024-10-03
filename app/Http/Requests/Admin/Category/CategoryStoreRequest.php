@@ -22,7 +22,7 @@ class CategoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'string|max:255',
             'parent_id' => 'nullable|exists:categories,id',
         ];
@@ -33,6 +33,7 @@ class CategoryStoreRequest extends FormRequest
         return [
             'name.required' => 'Vui lòng nhập tên danh mục',
             'name.max' => 'Tên danh mục không được quá 255 kí tự',
+            'name.unique' => 'Tên danh mục đã tồn tại.',
             'description.max' => 'Mô tả danh mục không được quá 255 kí tự',
             'parent_id.exists' => 'Danh mục cha không tồn tại.',
         ];
