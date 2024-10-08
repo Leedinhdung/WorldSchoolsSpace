@@ -11,7 +11,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript: void(0);">Danh mục</a></li>
-                        <li class="breadcrumb-item active">Danh sách danh mục</li>
+                        <li class="breadcrumb-item active">{{ $title }}</li>
                     </ol>
                 </div>
 
@@ -53,6 +53,7 @@
                                 <th data-ordering="false">Người tạo</th>
                                 <th>Trạng thái</th>
                                 <th>Thao tác</th>
+                                <th>Là danh mục con của danh mục : </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,9 +89,17 @@
                                             <a href="{{ route('admin.categories.edit', $category->id) }}"
                                                 class="btn btn-sm btn-warning">Chỉnh sửa</a>
                                             <a href="{{ route('admin.categories.destroy', $category->id) }}"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa {{ $category->title }} không?')"
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa {{ $category->name }} không?')"
                                                 class="btn btn-sm btn-danger">Xóa</a>
                                         </div>
+                                    </td>
+
+                                    <td>
+                                        @if ($category->parent)
+                                            {{ $category->parent->name }}
+                                        @else
+                                            <span class="badge bg-danger">Không có</span>
+                                        @endif
                                     </td>
 
                                 </tr>

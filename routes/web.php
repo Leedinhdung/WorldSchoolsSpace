@@ -56,8 +56,16 @@ Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
     });
 
     //POST
-    Route::prefix('post')->as('post.')->group(function () {
+    Route::prefix('posts')->as('posts.')->group(function () {
         Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::get('/trash', [PostController::class, 'trash'])->name('trash');
         Route::get('create', [PostController::class, 'create'])->name('create');
+        Route::post('store', [PostController::class, 'store'])->name('store');
+        Route::post('ckeditor/upload', [PostController::class, 'upload'])->name('ckeditor.upload');
+        Route::get('edit/{id}', [PostController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [PostController::class, 'update'])->name('update');
+        Route::get('destroy/{id}', [PostController::class, 'destroy'])->name('destroy');
+        Route::get('restore/{id}', [PostController::class, 'restore'])->name('restore');
+        Route::get('forcedelete/{id}', [PostController::class, 'forcedelete'])->name('forcedelete');
     });
 });

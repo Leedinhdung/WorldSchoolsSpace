@@ -98,25 +98,27 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Danh mục cha :</h5>
+                        <h5 class="card-title mb-0">Danh mục cha</h5>
                     </div>
                     <div class="card-body">
+
                         <select class="form-select" name="parent_id">
 
-                            <option value="">-- Không có danh mục cha --</option>
+                            <option value="">-- Không có danh mục cha --</option><hr>
 
                             @foreach ($categoryTree as $category)
                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @if (!empty($category->children))
-                                    @foreach ($category->children as $childCategory)
-                                        <option value="{{ $childCategory->id }}">
-                                            -- {{ $childCategory->name }}
-                                        </option>
-                                    @endforeach
+                                    @include('admin.categories.option-children', [
+                                        'children' => $category->children,
+                                        'prefix' => '-',
+                                    ])
+                                    <hr>
                                 @endif
                             @endforeach
 
                         </select>
+
                     </div>
                     <!-- end card body -->
                 </div>

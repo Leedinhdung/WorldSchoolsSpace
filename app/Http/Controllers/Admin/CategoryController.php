@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\CategoryStoreRequest;
 use App\Http\Requests\Admin\Category\CategoryUpdateRequest;
 use App\Models\Category;
-use Auth;
-use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -41,9 +41,13 @@ class CategoryController extends Controller
     public function create()
     {
         $title = 'Thêm danh mục';
-        // Lấy tất cả danh mục và xây dựng cây
-        $categories = Category::whereNull('deleted_at')->get();
-        $categoryTree = Category::buildCategoryTree($categories);
+
+        // Lấy tất cả các danh mục, bao gồm cả những danh mục cha đã bị xóa mềm
+        $categories = Category::withTrashed()->get();
+
+        // Xây dựng cây danh mục nhưng bỏ qua các danh mục cha đã bị xóa mềm
+        $categoryTree = Category::buildCategoryTree($categories, null, true); // Thêm tham số để bỏ qua danh mục cha bị xóa mềm
+
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('title', 'categoryTree'));
     }
@@ -100,9 +104,11 @@ class CategoryController extends Controller
         // Tìm danh mục cần sửa
         $getCategoryById = Category::findOrFail($id);
 
-        // Lấy tất cả các danh mục cha khác để chọn làm danh mục cha cho danh mục này
-        $categories = Category::whereNull('deleted_at')->where('id', '!=', $id)->get();
-        $categoryTree = Category::buildCategoryTree($categories);
+        // Lấy tất cả danh mục bao gồm cả các danh mục cha đã xóa mềm, nhưng bỏ qua chính danh mục đang sửa
+        $categories = Category::withTrashed()->where('id', '!=', $id)->get();
+
+        // Xây dựng cây danh mục nhưng bỏ qua các danh mục cha đã bị xóa mềm
+        $categoryTree = Category::buildCategoryTree($categories, null, true); // Thêm tham số để bỏ qua danh mục cha bị xóa mềm
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('title', 'getCategoryById', 'categoryTree'));
     }

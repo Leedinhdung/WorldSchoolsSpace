@@ -28,33 +28,45 @@ class Category extends Model
         return $this->hasMany(Post::class);
     }
 
-    // Lấy danh mục con
+    // Định nghĩa quan hệ với danh mục con
     public function children()
     {
         return $this->hasMany(Category::class, 'parent_id');
     }
 
-    // Lấy danh mục cha
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
     // Hàm đệ quy để xây dựng cây danh mục
-    public static function buildCategoryTree($categories, $parentId = null)
+    public static function buildCategoryTree($categories, $parentId = null, $skipTrashedParent = false)
     {
         $branch = [];
+
         foreach ($categories as $category) {
+            // Bỏ qua các danh mục cha bị xóa mềm nếu $skipTrashedParent là true
             if ($category->parent_id == $parentId) {
-                $children = self::buildCategoryTree($categories, $category->id);
+                if ($skipTrashedParent && $category->trashed()) {
+                    // Nếu danh mục cha bị xóa mềm, tiếp tục lấy các con của nó
+                    if (!empty($category->children)) {
+                        $branch = array_merge($branch, self::buildCategoryTree($category->children, $category->id, true));
+                    }
+                    continue;
+                }
+
+                // Gọi đệ quy để lấy các danh mục con
+                $children = self::buildCategoryTree($categories, $category->id, $skipTrashedParent);
                 if ($children) {
                     $category->children = $children;
                 }
                 $branch[] = $category;
             }
         }
+
         return $branch;
     }
+
 
     protected $casts = [
         'is_active' => 'boolean',

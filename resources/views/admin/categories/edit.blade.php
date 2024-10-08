@@ -99,33 +99,37 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Danh mục cha :</h5>
+                        <h5 class="card-title mb-0">Danh mục cha</h5>
                     </div>
                     <div class="card-body">
 
                         <select class="form-select" name="parent_id">
-                            <option value="">-- Không có danh mục cha --</option>
+
+                            <option value="">-- Không có danh mục cha --</option><hr>
 
                             @foreach ($categoryTree as $category)
-                                @if ($category->id !== $getCategoryById->id) <!-- Bỏ qua chính danh mục đang sửa -->
+                                @if ($category->id !== $getCategoryById->id)
+                                    <!-- Bỏ qua chính danh mục đang sửa -->
                                     <option value="{{ $category->id }}"
                                         {{ $category->id == $getCategoryById->parent_id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
 
                                     @if (!empty($category->children))
-                                        @foreach ($category->children as $childCategory)
-                                            @if ($childCategory->id !== $getCategoryById->id) <!-- Bỏ qua danh mục đang sửa -->
-                                                <option value="{{ $childCategory->id }}"
-                                                    {{ $childCategory->id == $getCategoryById->parent_id ? 'selected' : '' }}>
-                                                    -- {{ $childCategory->name }}
-                                                </option>
-                                            @endif
-                                        @endforeach
+                                        @include('admin.categories.option-children', [
+                                            'children' => $category->children,
+                                            'prefix' => '-',
+                                            'getCategoryById' => $getCategoryById, // Truyền danh mục hiện tại xuống view con
+                                        ])
                                     @endif
+                                    <hr>
                                 @endif
                             @endforeach
+
+
                         </select>
+
+
 
 
                     </div>
