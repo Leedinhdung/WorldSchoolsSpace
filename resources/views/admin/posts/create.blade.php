@@ -82,6 +82,11 @@
                                 <label for="content">Nội dung bài viết</label>
                                 <textarea id="editor" name="content">{{ old('content') }}</textarea>
                             </div>
+                            <small class="help-block form-text text-danger">
+                                @if ($errors->has('content'))
+                                    {{ $errors->first('content') }}
+                                @endif
+                            </small>
                         </div>
                     </div>
                 </div>
@@ -146,6 +151,11 @@
                                 style="width: 100%; object-fit: cover;">
                             <button type="button" class="btn btn-danger mt-2" onclick="removeImage()">Xóa ảnh</button>
                         </div>
+                        <small class="help-block form-text text-danger">
+                            @if ($errors->has('image'))
+                                {{ $errors->first('image') }}
+                            @endif
+                        </small>
                     </div>
                 </div>
 
@@ -156,10 +166,26 @@
                     <div class="card-body">
                         <div class="hstack gap-3 align-items-start">
                             <div class="flex-grow-1">
-                                <input name="tags" class="form-control" placeholder="tag1, tag2, tag3" type="text"
-                                    value="{{ old('tags') }}">
+
+                                <div class="tags-input" id="tags-input">
+                                    <input type="hidden" id="tags-hidden" name="tags">
+                                    <!-- Trường ẩn để lưu các tag -->
+                                    <input type="text" id="tags" name="tags-input"
+                                        placeholder="Nhập từ khóa...">
+                                </div>
+
+                                <div id="tag-list" style="margin-top: 10px;"></div>
+                                <!-- Danh sách tag sẽ hiển thị ở đây -->
+                                <small class="help-block form-text text-danger">
+                                    @if ($errors->has('tags'))
+                                        {{ $errors->first('tags') }}
+                                    @endif
+                                </small>
                             </div>
                         </div>
+
+
+
                     </div>
                     <!-- end card body -->
                 </div>
@@ -175,6 +201,63 @@
 @section('style-libs')
     <link href="{{ asset('theme/admin/assets/libs/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css" />
     <style>
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            align-items: center;
+        }
+
+        .tag {
+            background-color: #e0efff;
+            /* Màu nền xanh nhạt giống hình */
+            color: #333;
+            /* Màu chữ */
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #add8e6;
+            /* Viền nhẹ cho thẻ tag */
+        }
+
+        .tag span {
+            margin-right: 8px;
+            /* Khoảng cách giữa chữ và nút xóa */
+        }
+
+        .tag button {
+            background: none;
+            border: none;
+            color: red;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        #tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input#tags {
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 14px;
+            flex-grow: 1;
+            min-width: 100px;
+        }
+
         .switch {
             /* switch */
             --switch-width: 46px;
@@ -319,6 +402,67 @@
     </style>
 @endsection
 @section('script-libs')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('tags'); // Trường nhập liệu cho tag
+            const hiddenInput = document.getElementById('tags-hidden'); // Trường ẩn để lưu các tag
+            const tagList = document.getElementById('tag-list'); // Phần hiển thị danh sách tag
+            let tagsArray = hiddenInput.value ? hiddenInput.value.split(',') : []; // Khởi tạo mảng tags
+
+            // Hàm hiển thị các tag từ mảng tagsArray
+            function displayTags() {
+                tagList.innerHTML = ''; // Xóa các tag hiện có trên giao diện
+                tagsArray.forEach(tagText => {
+                    const tag = document.createElement('span');
+                    tag.classList.add('tag');
+                    tag.innerHTML =
+                        `<span>${tagText}</span><button type="button" onclick="removeTag('${tagText}')">X</button>`;
+                    tagList.appendChild(tag); // Hiển thị tag trong danh sách tag
+                });
+                updateHiddenInput(); // Cập nhật trường ẩn với các tag
+            }
+
+            // Hàm thêm tag
+            function addTag(tagText) {
+                if (tagText && !tagsArray.includes(tagText)) {
+                    tagsArray.push(tagText); // Thêm tag vào mảng tagsArray
+                    displayTags(); // Hiển thị lại các tag
+                }
+                input.value = ''; // Xóa nội dung trong input sau khi thêm tag
+            }
+
+            // Sự kiện khi nhấn Enter
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Ngăn submit form khi nhấn Enter
+                    const tagText = input.value.trim();
+                    addTag(tagText); // Thêm tag vào mảng
+                }
+            });
+
+            // Sự kiện khi nhấp ra ngoài (blur)
+            input.addEventListener('blur', function() {
+                const tagText = input.value.trim();
+                addTag(tagText); // Thêm tag khi rời khỏi ô nhập
+            });
+
+            // Hàm xóa tag
+            window.removeTag = function(tagText) {
+                tagsArray = tagsArray.filter(tag => tag !== tagText); // Loại bỏ tag khỏi mảng tagsArray
+                displayTags(); // Hiển thị lại các tag sau khi xóa
+            };
+
+            // Cập nhật giá trị của trường ẩn
+            function updateHiddenInput() {
+                hiddenInput.value = tagsArray.join(','); // Gán giá trị mảng tag vào trường ẩn
+            }
+
+            // Khởi tạo hiển thị các tag nếu đã có
+            displayTags();
+        });
+    </script>
+
+
     <script>
         // Hàm hiển thị ảnh khi người dùng chọn file
         function previewImage(event) {
