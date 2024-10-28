@@ -22,12 +22,13 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'content' => 'required',
-            'slug' => 'required|unique:posts,slug',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png',
-            'tags' => 'array',
-            'tags.*' => 'exists:tags,id',
+            'title' => 'required|string|max:255', // Trường title không được trống, là chuỗi và tối đa 255 ký tự
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif', // Trường image bắt buộc, phải là file ảnh (jpg, jpeg, png, gif)
+            'tags' => 'distinct', // các giá trị không được trùng lặp
+            'tags.*' => 'exists:tags,id', // Mỗi phần tử của mảng tags phải tồn tại trong bảng tags (cột id)
+            'slug' => 'required|string', // Trường slug là bắt buộc
+            'excerpt' => 'required|string', // Trường excerpt là bắt buộc
+            'content' => 'required|string', // Trường content là bắt buộc
         ];
     }
 
@@ -35,10 +36,25 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title.required' => 'Tiêu đề là bắt buộc',
-            'content.required' => 'Nội dung là bắt buộc',
-            'slug.required' => 'Slug là bắt buộc',
-            'slug.unique' => 'Slug đã tồn tại',
+            'title.string' => 'Tiêu đề phải là một chuỗi',
+            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự',
+
+            'image.required' => 'Ảnh là bắt buộc',
+            'image.image' => 'Tệp tải lên phải là hình ảnh',
+            'image.mimes' => 'Ảnh phải có định dạng jpg, jpeg, png hoặc gif',
+
+            'tags.distinct' => 'Các tag không được trùng lặp',
             'tags.*.exists' => 'Tag không hợp lệ',
+
+            'slug.required' => 'Slug là bắt buộc',
+            'slug.string' => 'Slug phải là một chuỗi',
+
+            'excerpt.required' => 'Tóm tắt là bắt buộc',
+            'excerpt.string' => 'Tóm tắt phải là một chuỗi',
+
+            'content.required' => 'Nội dung là bắt buộc',
+            'content.string' => 'Nội dung phải là một chuỗi',
         ];
     }
+
 }

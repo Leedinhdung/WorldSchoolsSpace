@@ -14,7 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        // Sử dụng guard 'api' cho các yêu cầu API (JWT)
+        'guard' => 'web',  // Đổi từ 'web' thành 'api'
         'passwords' => 'users',
     ],
 
@@ -39,6 +40,13 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard cho API, sử dụng JWT
+        'api' => [
+            'driver' => 'jwt',  // Sử dụng driver jwt cho guard api
+            'provider' => 'users',
+            'hash' => false,
         ],
     ],
 

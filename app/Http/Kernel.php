@@ -39,9 +39,10 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            // Đảm bảo rằng middleware xác thực JWT không được áp dụng cho toàn bộ API nếu không cần thiết
+            // \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
         ],
     ];
 

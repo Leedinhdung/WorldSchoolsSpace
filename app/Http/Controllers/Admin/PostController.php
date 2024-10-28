@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Post\StorePostRequest;
+use App\Http\Requests\Admin\Post\UpdatePostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -69,11 +70,11 @@ class PostController extends Controller
             $extension = $request->file('upload')->getClientOriginalExtension();
             $fileName = $fileName . '_' . time() . '.' . $extension;
 
-            // Lưu ảnh vào thư mục tạm `storage/app/public/tmp_uploads`
-            $request->file('upload')->move(storage_path('app/public/tmp_uploads'), $fileName);
+            // Lưu ảnh trực tiếp vào thư mục 'uploads' trong 'storage/app/public/uploads'
+            $request->file('upload')->move(storage_path('app/public/uploads'), $fileName);
 
-            // Trả về URL của ảnh tạm
-            $url = asset('storage/tmp_uploads/' . $fileName);
+            // Trả về URL của ảnh đã được lưu
+            $url = asset('storage/uploads/' . $fileName);
 
             return response()->json([
                 'uploaded' => true,
@@ -86,8 +87,6 @@ class PostController extends Controller
             'error' => ['message' => 'Không thể tải ảnh lên']
         ]);
     }
-
-
 
 
     /**
@@ -105,28 +104,34 @@ class PostController extends Controller
             $content = $data['content'];
 
             // Tìm tất cả các ảnh trong nội dung (dùng regex để tìm URL ảnh)
-            preg_match_all('/src="([^"]*)"/', $content, $matches);
-            $imagePaths = $matches[1]; // Mảng chứa URL các ảnh tạm
+            preg_match_all('/<img[^>]+src="([^">]+)"/', $content, $matches);
+            $imagePaths = $matches[1]; // Mảng chứa URL các ảnh
 
-            foreach ($imagePaths as $tmpImageUrl) {
-                // Loại bỏ phần asset URL để lấy tên file
-                $tmpImagePath = str_replace(asset('storage/tmp_uploads/'), '', $tmpImageUrl);
-                $newImagePath = 'uploads/' . basename($tmpImagePath);
+            foreach ($imagePaths as $imageUrl) {
+                // Nếu URL không phải là từ server của bạn, tải ảnh về
+                if (!str_contains($imageUrl, asset('storage'))) {
+                    try {
+                        // Tải ảnh từ URL bên ngoài về
+                        $imageContents = file_get_contents($imageUrl);
+                        $imageName = basename(parse_url($imageUrl, PHP_URL_PATH));
 
-                // Kiểm tra sự tồn tại của ảnh tạm và di chuyển
-                if (Storage::disk('public')->exists('tmp_uploads/' . $tmpImagePath)) {
-                    Storage::disk('public')->move('tmp_uploads/' . $tmpImagePath, $newImagePath);
+                        // Lưu ảnh vào thư mục 'uploads' trong storage
+                        $newImagePath = 'uploads/' . time() . '_' . $imageName;
+                        Storage::disk('public')->put($newImagePath, $imageContents);
 
-                    // Thay thế URL tạm bằng URL mới trong nội dung
-                    $content = str_replace($tmpImageUrl, asset('storage/' . $newImagePath), $content);
-                } else {
-                    throw new \Exception('Ảnh tạm không tồn tại: ' . $tmpImageUrl);
+                        // Thay thế URL bên ngoài bằng URL mới trên server
+                        $content = str_replace($imageUrl, asset('storage/uploads/' . $newImagePath), $content);
+                    } catch (\Exception $e) {
+                        // Ghi log nếu xảy ra lỗi khi tải ảnh từ bên ngoài
+                        Log::error('Không thể tải ảnh từ URL: ' . $imageUrl . ' - ' . $e->getMessage());
+                    }
                 }
             }
 
             // Cập nhật lại nội dung đã thay thế URL ảnh
             $data['content'] = $content;
 
+            // Xử lý ảnh đại diện
             if ($request->hasFile('image')) {
                 $imagePath = Storage::put(self::PATH_UPLOAD, $request->file('image'));
                 $data['image'] = $imagePath;
@@ -143,7 +148,6 @@ class PostController extends Controller
                 }
             }
 
-            // Kiểm tra bài viết đã được lưu hay chưa
             if (!$newPost) {
                 throw new \Exception('Thêm mới thất bại!');
             }
@@ -197,7 +201,7 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(StorePostRequest $request, string $id)
+    public function update(UpdatePostRequest $request, string $id)
     {
         DB::beginTransaction();
         try {
@@ -214,8 +218,8 @@ class PostController extends Controller
             $newContent = $data['content'];
 
             // Tìm tất cả các URL ảnh trong nội dung cũ và nội dung mới
-            preg_match_all('/src="([^"]*)"/', $oldContent, $oldMatches);
-            preg_match_all('/src="([^"]*)"/', $newContent, $newMatches);
+            preg_match_all('/<img[^>]+src="([^">]+)"/', $oldContent, $oldMatches);
+            preg_match_all('/<img[^>]+src="([^">]+)"/', $newContent, $newMatches);
 
             $oldImagePaths = $oldMatches[1]; // Ảnh trong nội dung cũ
             $newImagePaths = $newMatches[1]; // Ảnh trong nội dung mới
@@ -233,20 +237,23 @@ class PostController extends Controller
                 }
             }
 
-            // Di chuyển các ảnh mới từ thư mục tạm sang thư mục uploads
-            preg_match_all('/src="([^"]*)"/', $newContent, $matches);
-            $imagePaths = $matches[1]; // Mảng chứa URL các ảnh tạm
+            // Xử lý ảnh trong nội dung mới (tải ảnh từ URL bên ngoài về và lưu vào thư mục uploads)
+            foreach ($newImagePaths as $imageUrl) {
+                if (!str_contains($imageUrl, asset('storage/uploads'))) {
+                    // Tải ảnh từ URL bên ngoài về
+                    try {
+                        $imageContents = file_get_contents($imageUrl);
+                        $imageName = basename(parse_url($imageUrl, PHP_URL_PATH));
 
-            foreach ($imagePaths as $tmpImageUrl) {
-                $tmpImagePath = str_replace(asset('storage/tmp_uploads/'), '', $tmpImageUrl);
-                $newImagePath = 'uploads/' . basename($tmpImagePath);
+                        // Lưu ảnh vào thư mục 'uploads' trong storage
+                        $newImagePath = 'uploads/' . time() . '_' . $imageName;
+                        Storage::disk('public')->put($newImagePath, $imageContents);
 
-                // Kiểm tra sự tồn tại của ảnh tạm và di chuyển
-                if (Storage::disk('public')->exists('tmp_uploads/' . $tmpImagePath)) {
-                    Storage::disk('public')->move('tmp_uploads/' . $tmpImagePath, $newImagePath);
-
-                    // Thay thế URL tạm bằng URL mới trong nội dung
-                    $newContent = str_replace($tmpImageUrl, asset('storage/' . $newImagePath), $newContent);
+                        // Thay thế URL bên ngoài bằng URL mới trên server
+                        $newContent = str_replace($imageUrl, asset('storage/uploads/' . $newImagePath), $newContent);
+                    } catch (\Exception $e) {
+                        Log::error('Không thể tải ảnh từ URL: ' . $imageUrl . ' - ' . $e->getMessage());
+                    }
                 }
             }
 
@@ -288,6 +295,7 @@ class PostController extends Controller
             return redirect()->back()->withInput()->with(['error' => 'Cập nhật thất bại! Lỗi: ' . $e->getMessage()]);
         }
     }
+
 
 
     /**
