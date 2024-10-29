@@ -34,6 +34,7 @@ Route::post('post/{id}/comment', [PostController::class, 'postComment']); // Bì
 Route::get('post/{id}/comments', [PostController::class, 'getPostComments']); // Lấy danh sách bình luận
 Route::get('post/{id}/share', [PostController::class, 'getShareableLink']); // Chia sẻ qua mạng xã hội
 Route::delete('comment/{id}', [PostController::class, 'deleteComment']); // Xóa bình luận
+Route::get('/categories/{category}/posts', [PostController::class, 'getPostsByCategory']);
 
 
 Route::get('login/{provider}', [AuthController::class, 'redirectToProvider']);
