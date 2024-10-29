@@ -28,15 +28,15 @@ class Category extends Model
         return $this->hasMany(Post::class);
     }
 
-    // Định nghĩa quan hệ với danh mục con
-    public function children()
-    {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
-
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    // Thiết lập mối quan hệ con
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 
     // Hàm đệ quy để xây dựng cây danh mục

@@ -93,6 +93,27 @@
                         </ul>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarComment" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarComment">
+                        <i class="ri-dashboard-2-line"></i>
+                        <span>Quản lý bình luận</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarComment">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('admin.comment.index') }}" class="nav-link" data-key="t-analytics">
+                                    Danh sách bình luận
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ route('admin.posts.create') }}" class="nav-link" data-key="t-crm">
+                                    Thêm mới bài viết
+                                </a>
+                            </li> --}}
+                        </ul>
+                    </div>
+                </li>
                 <!-- end Dashboard Menu -->
             </ul>
         </div>

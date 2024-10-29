@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PostController;
 use Illuminate\Support\Facades\Route;
@@ -67,5 +68,10 @@ Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
         Route::get('destroy/{id}', [PostController::class, 'destroy'])->name('destroy');
         Route::get('restore/{id}', [PostController::class, 'restore'])->name('restore');
         Route::get('forcedelete/{id}', [PostController::class, 'forcedelete'])->name('forcedelete');
+    });
+    //COMMENT
+    Route::prefix('comment')->as('comment.')->group(function () {
+        Route::get('/', [CommentController::class, 'index'])->name('index');
+        Route::get('/show/{id}', [CommentController::class, 'show'])->name('show');
     });
 });
