@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -79,11 +80,20 @@ class PostController extends Controller
     public function getDetailPost($slug)
     {
         // Tìm bài viết theo ID, bao gồm các thông tin liên quan (ví dụ: danh mục, người dùng)
-        $post = Post::with(['category', 'user','tags'])->where('slug', $slug)->first();
+        $post = Post::with(['category', 'user', 'tags'])->where('slug', $slug)->first();
         // Kiểm tra nếu bài viết không tồn tại
         if (!$post) {
             return response()->json(['message' => 'Bài viết không tồn tại'], 404);
         }
         return response()->json($post);
+    }
+    public function getPostsByCategory(Category $category)
+    {
+        $posts = $category->posts()->get();
+
+        return response()->json([
+            'category' => $category->name,
+            'posts' => $posts,
+        ]);
     }
 }
