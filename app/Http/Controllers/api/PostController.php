@@ -76,4 +76,14 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Xóa bình luận thành công!']);
     }
+    public function getDetailPost($slug)
+    {
+        // Tìm bài viết theo ID, bao gồm các thông tin liên quan (ví dụ: danh mục, người dùng)
+        $post = Post::with(['category', 'user','tags'])->where('slug', $slug)->first();
+        // Kiểm tra nếu bài viết không tồn tại
+        if (!$post) {
+            return response()->json(['message' => 'Bài viết không tồn tại'], 404);
+        }
+        return response()->json($post);
+    }
 }
