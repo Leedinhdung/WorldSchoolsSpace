@@ -72,16 +72,17 @@ class AuthController extends Controller
     }
 
 
-
     // Trả về JWT
     protected function respondWithToken($token)
     {
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user() // Thêm thông tin người dùng
         ]);
     }
+
 
     public function redirectToProvider($provider)
     {

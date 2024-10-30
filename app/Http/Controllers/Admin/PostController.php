@@ -30,7 +30,7 @@ class PostController extends Controller
     public function index()
     {
         $title = 'Danh sách bài viết';
-        $posts = Post::whereNull('deleted_at')->get();
+        $posts = Post::whereNull('deleted_at')->with('category')->get(); // Lấy cả các category đã bị xóa mềm
         $totalPosts = Post::whereNull('deleted_at')->count();
         $trashedPosts = Post::onlyTrashed()->count();
         return view(self::PATH_VIEW . __FUNCTION__, compact('title', 'posts', 'totalPosts', 'trashedPosts'));
