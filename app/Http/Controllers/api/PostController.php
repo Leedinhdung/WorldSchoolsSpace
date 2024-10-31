@@ -89,7 +89,14 @@ class PostController extends Controller
     }
     public function getPostsByCategory(Category $category)
     {
-        $posts = $category->posts()->get();
+        // Lấy tất cả danh mục con và các bài viết của chúng
+        $subCategories = $category->children()->with('posts')->get();
+        $posts = $category->posts;
+
+        // Tổng hợp bài viết từ danh mục cha và các danh mục con
+        foreach ($subCategories as $subCategory) {
+            $posts = $posts->merge($subCategory->posts);
+        }
 
         return response()->json([
             'category' => $category->name,
