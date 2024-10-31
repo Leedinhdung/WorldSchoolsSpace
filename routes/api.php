@@ -22,11 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('category', [CategoryController::class, 'getCategories']); // Lấy danh sách bài viết
+Route::get('category', [CategoryController::class, 'getCategories']); // Lấy danh sách danh mục
 
 
 Route::get('post', [PostController::class, 'getPost']); // Lấy danh sách bài viết
-Route::get('post/{slug}', [PostController::class, 'getDetailPost']); // Lấy danh sách bài viết
+Route::get('post/{id}-{slug}', [PostController::class, 'getDetailPost']); // Lấy chi tiết bài viết
 Route::get('post/popular', [PostController::class, 'getPopularPost']); // Lấy bài viết được xem nhiều nhất
 Route::get('post/latest', [PostController::class, 'getLatestPost']); // Lấy bài viết mới nhất
 Route::post('post/{id}/comment', [PostController::class, 'postComment']); // Bình luận trên bài viết

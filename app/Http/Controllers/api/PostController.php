@@ -20,9 +20,17 @@ class PostController extends Controller
     // Lấy danh sách bài viết được xem nhiều nhất
     public function getPopularPost(Request $request)
     {
-        $post = Post::orderBy('views', 'desc')->paginate(10);
-        return response()->json($post);
+        $posts = Post::where('is_active', 1) // Chỉ lấy bài viết đang hoạt động
+            ->orderBy('views', 'desc')
+            ->paginate(10);
+
+        if ($posts->isEmpty()) {
+            return response()->json(['message' => 'Bài viết không tồn tại'], 404);
+        }
+
+        return response()->json($posts);
     }
+
 
     // Lấy danh sách bài viết mới nhất
     public function getLatestPost(Request $request)
@@ -69,6 +77,7 @@ class PostController extends Controller
             'facebook' => "https://www.facebook.com/sharer/sharer.php?u=" . urlencode($shareLink),
         ]);
     }
+
     //Xóa bình luận
     public function deleteComment($id)
     {
@@ -77,16 +86,24 @@ class PostController extends Controller
 
         return response()->json(['message' => 'Xóa bình luận thành công!']);
     }
-    public function getDetailPost($slug)
+
+
+    // Hàm lấy chi tiết bài viết
+    public function getDetailPost($id, $slug)
     {
-        // Tìm bài viết theo ID, bao gồm các thông tin liên quan (ví dụ: danh mục, người dùng)
-        $post = Post::with(['category', 'user', 'tags'])->where('slug', $slug)->first();
-        // Kiểm tra nếu bài viết không tồn tại
+        $post = Post::with(['category', 'user', 'tags', 'comments'])
+            ->where('id', $id)
+            ->where('slug', $slug) // Đảm bảo slug cũng khớp
+            ->first();
+
         if (!$post) {
             return response()->json(['message' => 'Bài viết không tồn tại'], 404);
         }
+
         return response()->json($post);
     }
+    
+
     public function getPostsByCategory(Category $category)
     {
         $posts = $category->posts()->get();
