@@ -102,15 +102,17 @@ class PostController extends Controller
 
         return response()->json($post);
     }
-    
 
-    public function getPostsByCategory(Category $category)
+    public function getPostsByCategorySlug($slug)
     {
-        // Lấy tất cả danh mục con và các bài viết của chúng
+        // Tìm danh mục dựa trên slug
+        $category = Category::where('slug', $slug)->firstOrFail();
+
+        // Lấy danh sách các danh mục con và bài viết của chúng
         $subCategories = $category->children()->with('posts')->get();
         $posts = $category->posts;
 
-        // Tổng hợp bài viết từ danh mục cha và các danh mục con
+        // Tổng hợp bài viết từ danh mục chính và các danh mục con
         foreach ($subCategories as $subCategory) {
             $posts = $posts->merge($subCategory->posts);
         }
