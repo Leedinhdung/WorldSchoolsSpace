@@ -144,7 +144,7 @@
                                         </div>
                                     </td>
                                     <td>{{ $post->excerpt }}</td>
-                                    <td>{!! $post->content !!}</td>
+                                    <td>{!! Str::limit($post->content, 200, '...') !!}</td>
                                     <td>{{ $post->slug }}</td>
                                     <td>{{ $post->user->name }}</td>
                                 </tr>
