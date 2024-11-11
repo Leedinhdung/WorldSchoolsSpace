@@ -13,4 +13,8 @@ class Permission extends Model
         'slug',
         'description',
     ];
+    public function permissionsChildren()
+    {
+        return $this->hasMany(Permission::class, 'parent_id');
+    }
 }

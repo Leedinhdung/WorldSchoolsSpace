@@ -14,7 +14,7 @@ class Comment extends Model
         'parent_id',
         'content',
         'status',
-
+        'is_hidden'
     ];
     public function user()
     {

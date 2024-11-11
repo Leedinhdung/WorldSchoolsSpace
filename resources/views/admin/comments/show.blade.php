@@ -69,10 +69,13 @@
                                         {{ $comment->content }}
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <a href="{{ route('admin.comment.show', $comment->id) }}"
-                                                class="btn btn-sm btn-warning">Ẩn</a>
-                                        </div>
+                                        <form action="{{ route('admin.comment.update', $comment->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-sm btn-warning">
+                                                {{ $comment->is_hidden ? 'Hiển thị' : 'Ẩn' }}
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
