@@ -102,7 +102,8 @@
                     <div class="collapse menu-dropdown" id="sidebarComment">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ route('admin.comment.index') }}" class="nav-link" data-key="t-analytics">
+                                <a href="{{ route('admin.comment.index') }}" class="nav-link"
+                                    data-key="t-analytics">
                                     Danh sách bình luận
                                 </a>
                             </li>
@@ -111,6 +112,53 @@
                                     Thêm mới bài viết
                                 </a>
                             </li> --}}
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarUser" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarUser">
+                        <i class="ri-dashboard-2-line"></i>
+                        <span>Quản lý người dùng</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarUser">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('admin.user.index') }}" class="nav-link" data-key="t-analytics">
+                                    Danh sách người dùng
+                                </a>
+                            </li>
+                            {{-- <li class="nav-item">
+                                <a href="{{ route('admin.posts.create') }}" class="nav-link" data-key="t-crm">
+                                    Thêm mới bài viết
+                                </a>
+                            </li> --}}
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarRole" data-bs-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebarRole">
+                        <i class="ri-dashboard-2-line"></i>
+                        <span>Quản lý vai trò</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarRole">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ route('admin.role.index') }}" class="nav-link" data-key="t-analytics">
+                                    Danh sách vai trò
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.role.create') }}" class="nav-link" data-key="t-crm">
+                                    Thêm vai trò
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.permission.create') }}" class="nav-link" data-key="t-crm">
+                                    Thêm quyền
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </li>

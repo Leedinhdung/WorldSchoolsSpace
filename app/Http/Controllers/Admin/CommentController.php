@@ -32,24 +32,16 @@ class CommentController extends Controller
         $comments = $post->comments;
         // dd($comments);
         // Trả về view kèm theo dữ liệu bài viết và bình luận
-        return view(self::PATH_VIEW . __FUNCTION__, compact('comments','title'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('comments', 'title'));
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $comment = Comment::findOrFail($id); // Tìm bình luận theo ID
+        $comment->is_hidden = !$comment->is_hidden; // Đảo ngược trạng thái ẩn
+        $comment->save(); // Lưu thay đổi
+
+        return redirect()->back()->with('success', 'Trạng thái bình luận đã được cập nhật.');
     }
 
     /**

@@ -5,7 +5,10 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -73,5 +76,31 @@ Route::prefix('admin')->middleware('admin')->as('admin.')->group(function () {
     Route::prefix('comment')->as('comment.')->group(function () {
         Route::get('/', [CommentController::class, 'index'])->name('index');
         Route::get('/show/{id}', [CommentController::class, 'show'])->name('show');
+        Route::put('/update/{id}', [CommentController::class, 'update'])->name('update');
+    });
+    //USER
+    Route::prefix('user')->as('user.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::get('/edit/{id}', [UserController::class, 'edit'])->name('edit');
+        Route::put('/update/{id}', [UserController::class, 'update'])->name('update');
+    });
+    Route::prefix('role')->as('role.')->group(function () {
+        Route::get('/', [RoleController::class, 'index'])->name('index');
+        // Route::get('/trash', [PostController::class, 'trash'])->name('trash');
+        Route::get('/create', [RoleController::class, 'create'])->name('create');
+        Route::post('/create', [RoleController::class, 'store'])->name('store');
+        Route::get('{id}/show', [RoleController::class, 'show'])->name('show');
+        Route::get('{id}/edit', [RoleController::class, 'edit'])->name('edit');
+        Route::post('{id}/update', [RoleController::class, 'update'])->name('update');
+        Route::get('{id}/delsoft', [RoleController::class, 'delSoft'])->name('delsoft');
+        Route::get('{id}/restore', [RoleController::class, 'restore'])->name('restore');
+        Route::get('{id}/delete', [RoleController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('permission')->as('permission.')->group(function () {
+        Route::get('/create', [PermissionController::class, 'create'])->name('create');
+        Route::post('/create', [PermissionController::class, 'store'])->name('store');
+        Route::get('{id}/edit', [PermissionController::class, 'edit'])->name('edit');
+        Route::post('{id}/update', [PermissionController::class, 'update'])->name('update');
+        Route::get('{id}/delete', [PermissionController::class, 'destroy'])->name('destroy');
     });
 });
