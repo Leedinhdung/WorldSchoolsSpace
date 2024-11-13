@@ -27,8 +27,8 @@ Route::get('category', [CategoryController::class, 'getCategories']); // Lấy d
 
 Route::get('post', [PostController::class, 'getPost']); // Lấy danh sách bài viết
 Route::get('post/{slug}', [PostController::class, 'getDetailPost']); // Lấy chi tiết bài viết
-Route::get('post/popular', [PostController::class, 'getPopularPost']); // Lấy bài viết được xem nhiều nhất
-Route::get('post/latest', [PostController::class, 'getLatestPost']); // Lấy bài viết mới nhất 
+Route::get('posts/popular', [PostController::class, 'getPopularPost']); // Lấy bài viết được xem nhiều nhất
+Route::get('posts/latest', [PostController::class, 'getLatestPost']); // Lấy bài viết mới nhất 
 Route::post('post/{id}/comment', [PostController::class, 'postComment']); // Bình luận trên bài viết
 Route::get('post/{id}/comments', [PostController::class, 'getPostComments']); // Lấy danh sách bình luận
 Route::get('post/{id}/share', [PostController::class, 'getShareableLink']); // Chia sẻ qua mạng xã hội
