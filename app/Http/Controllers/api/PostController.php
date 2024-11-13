@@ -94,7 +94,7 @@ class PostController extends Controller
         if (!$post) {
             return response()->json(['message' => 'Bài viết không tồn tại'], 404);
         }
-
+        $post->increment('views');
         return response()->json($post);
     }
 
