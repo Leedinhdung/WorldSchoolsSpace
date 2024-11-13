@@ -23,7 +23,6 @@ class StorePostRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255', // Trường title không được trống, là chuỗi và tối đa 255 ký tự
-            'image' => 'required|image|mimes:jpg,jpeg,png,gif', // Trường image bắt buộc, phải là file ảnh (jpg, jpeg, png, gif)
             'tags' => 'distinct', // các giá trị không được trùng lặp
             'tags.*' => 'exists:tags,id', // Mỗi phần tử của mảng tags phải tồn tại trong bảng tags (cột id)
             'slug' => 'required|string', // Trường slug là bắt buộc
