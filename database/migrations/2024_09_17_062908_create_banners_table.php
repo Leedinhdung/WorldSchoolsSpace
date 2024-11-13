@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('image');
             $table->string('url')->nullable();
             $table->boolean('is_active')->default(0);
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }
