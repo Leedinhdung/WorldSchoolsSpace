@@ -53,9 +53,13 @@ class PostController extends Controller
         $comment->content = $validatedData['content'];
         $comment->save();
 
-        return response()->json(['message' => 'Thêm bình luận thành công']);
-    }
+        $comment = Comment::with('user')->find($comment->id);
 
+        return response()->json([
+            'message' => 'Thêm bình luận thành công',
+            'data' => $comment,
+        ]);
+    }
     // Lấy danh sách người bình luận cho một bài viết
     // Route: GET /api/post/{id}/comments
     public function getPostComments($id)
