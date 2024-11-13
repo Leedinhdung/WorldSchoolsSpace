@@ -52,7 +52,6 @@
                                 <th data-ordering="false">Ảnh đại diện</th>
                                 <th>Lượt xem</th>
                                 <th>Trạng thái</th>
-                                <th>Is_active</th>
                                 <th>Thao tác</th>
                                 <th>Tóm tắt</th>
                                 <th>Nội dung</th>
@@ -61,46 +60,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- <tr>
-                                <th scope="row">
-                                    <div class="form-check">
-                                        <input class="form-check-input fs-15" type="checkbox" name="checkAll"
-                                            value="option1">
-                                    </div>
-                                </th>
-                                <td>01</td>
-                                <td>VLZ-452</td>
-                                <td>VLZ1400087402</td>
-                                <td><a href="#!">Post launch reminder/ post list</a></td>
-                                <td>Joseph Parker</td>
-                                <td>Alexis Clarke</td>
-                                <td>Joseph Parker</td>
-                                <td>03 Oct, 2021</td>
-                                <td><span class="badge bg-info-subtle text-info">Re-open</span></td>
-                                <td><span class="badge bg-danger">High</span></td>
-                                <td>
-                                    <div class="dropdown d-inline-block">
-                                        <button class="btn btn-soft-secondary btn-sm dropdown" type="button"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ri-more-fill align-middle"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            <li><a href="#!" class="dropdown-item"><i
-                                                        class="ri-eye-fill align-bottom me-2 text-muted"></i>
-                                                    View</a></li>
-                                            <li><a class="dropdown-item edit-item-btn"><i
-                                                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>
-                                                    Edit</a></li>
-                                            <li>
-                                                <a class="dropdown-item remove-item-btn">
-                                                    <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i>
-                                                    Delete
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr> --}}
+                            
 
                             @php
                                 $i = 0;
@@ -124,11 +84,6 @@
                                         <img src="{{ Storage::url($post->image) }}" alt="..." style="width: 100px;">
                                     </td>
                                     <td>{{ $post->views }}</td>
-                                    <td>
-                                        {!! $post->status
-                                            ? '<span class="badge bg-warning">Chờ duyệt</span>'
-                                            : '<span class="badge bg-info">Đã đăng</span>' !!}
-                                    </td>
                                     <td>
                                         {!! $post->is_active
                                             ? '<span class="badge bg-primary">Hoạt động</span>'

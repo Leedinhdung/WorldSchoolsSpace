@@ -89,13 +89,11 @@ class PostController extends Controller
 
 
     // Hàm lấy chi tiết bài viết
-    public function getDetailPost($id, $slug)
+    public function getDetailPost($slug)
     {
         $post = Post::with(['category', 'user', 'tags', 'comments'])
-            ->where('id', $id)
             ->where('slug', $slug) // Đảm bảo slug cũng khớp
             ->first();
-
         if (!$post) {
             return response()->json(['message' => 'Bài viết không tồn tại'], 404);
         }
