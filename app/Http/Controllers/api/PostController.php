@@ -13,21 +13,14 @@ class PostController extends Controller
     // Lấy danh sách bài viết theo ngày đăng
     public function getPost(Request $request)
     {
-        $post = Post::orderBy('created_at', 'desc')->paginate(10);
+        $post = Post::orderBy('created_at', 'desc')->paginate(6);
         return response()->json($post);
     }
 
     // Lấy danh sách bài viết được xem nhiều nhất
     public function getPopularPost(Request $request)
     {
-        $posts = Post::where('is_active', 1) // Chỉ lấy bài viết đang hoạt động
-            ->orderBy('views', 'desc')
-            ->paginate(10);
-
-        if ($posts->isEmpty()) {
-            return response()->json(['message' => 'Bài viết không tồn tại'], 404);
-        }
-
+        $posts = Post::orderBy('views', 'desc')->paginate(6);;
         return response()->json($posts);
     }
 
@@ -35,7 +28,7 @@ class PostController extends Controller
     // Lấy danh sách bài viết mới nhất
     public function getLatestPost(Request $request)
     {
-        $post = Post::latest()->paginate(10);
+        $post = Post::latest()->paginate(6);
         return response()->json($post);
     }
 
